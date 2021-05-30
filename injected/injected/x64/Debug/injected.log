@@ -1,3 +1,0 @@
-﻿  dllmain.cpp
-C:\Users\Théo\Desktop\injected\injected\injected\dllmain.cpp(153,12): warning C4101: 'updateT' : variable locale non référencée
-  injected.vcxproj -> C:\Users\Théo\Desktop\injected\injected\x64\Debug\injected.dll
