@@ -2,10 +2,10 @@
 
 2. Create obj file
 
-cl /EHsc /c .\src\*.c /I .\include /I "C:\Program Files (x86)\Java\jdk1.8.0_291\include\win32" /I "C:\Program Files (x86)\Java\jdk1.8.0_291\include" /Fo".\obj\\"
+cl /EHsc /c .\src\*.cpp /I .\include /Fo".\obj\\"
 
 PS: Don't forget to replace with the good path to your include folder.
 
 3. Create .dll with obj file
 
-link /DLL /OUT:finjected.dll .\obj\*.obj
+link /DLL /OUT:injected.dll .\obj\*.obj .\lib\*.lib
