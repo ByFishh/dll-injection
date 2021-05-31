@@ -38,7 +38,7 @@ static int search_process_by_name(std::vector<DWORD> *pids)
 
 static int inject_dll_into_process(DWORD pid)
 {
-    const char* dllpath = "C:\\Users\\Antoine Gasser\\Desktop\\Test_injected_exe\\create_exe_cpp\\injected.dll";
+    const char* dllpath = "C:\\Users\\Antoine Gasser\\Desktop\\Repo\\Projet Perso\\EpyCheat\\EpyCheat\\injected.dll";
     HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, 0, pid);
     HANDLE hThread;
     void* loc;
