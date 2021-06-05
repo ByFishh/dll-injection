@@ -5,6 +5,4 @@
 #ifndef _EPYCHEAT_H
 #define _EPYCHEAT_H
 
-void inject();
-
 #endif

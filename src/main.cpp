@@ -39,57 +39,48 @@ int attach_jvm(void)
     return 0;
 }
 
-void inject_class()
+jobject getMc()
 {
-    /*
-    bool is1_8 = (settings->version == Version::FORGE_1_8 || settings->version == Version::VANILLA_1_8 || settings->version == Version::LUNAR_1_8);
-    std::string type = is1_8 ? "(Ljava/lang/String;FFIZ)I" : "(Ljava/lang/String;IIIZ)I";
-    
-    jclass FontRenderer_clazz = cheat::g_Hack->FindClass(Mapper::getMapping("net/minecraft/client/gui/FontRenderer").data());
-    jmethodID renderText_mid = cheat::g_Hack->env()->GetMethodID(FontRenderer_clazz, Mapper::getMapping("drawString").data(), type.data());
-    jstring txtToRender = cheat::g_Hack->env()->NewStringUTF(txt.data());
-    
-    if (is1_8)
-        cheat::g_Hack->env()->CallIntMethod(Minecraft::get().GetFontRendererObj(Minecraft::get().GetTheMinecraftObj()), renderText_mid, txtToRender, (float)x, (float)y, color, shadow);
-    else
-        cheat::g_Hack->env()->CallIntMethod(Minecraft::get().GetFontRendererObj(Minecraft::get().GetTheMinecraftObj()), renderText_mid, txtToRender, x, y, color, shadow);
-    */
+	jclass mc_class = data.env->FindClass("net/minecraft/client/Minecraft");
+	jmethodID find_entry = data.env->GetStaticMethodID(mc_class, "getMinecraft", "()Lnet/minecraft/client/Minecraft;");
+	jobject instance = data.env->CallStaticObjectMethod(mc_class, find_entry);
 
-   jclass cls2 = data.env->FindClass("net/minecraft/client/Minecraft");  // try to find the class
-        if(cls2 == nullptr) {
-            std::cerr << "ERROR: class not found !";
-        }
-        else {                                  // if class found, continue
-            std::cout << "Class MyTest found" << std::endl;
-            jmethodID mid = data.env->GetStaticMethodID(cls2, "caca", "()V");  // find method
-            if(mid == nullptr)
-                std::cerr << "ERROR: method void mymain() not found !" << std::endl;
-            else {
-                data.env->CallStaticVoidMethod(cls2, mid);                      // call method
-                std::cout << std::endl;
-            }
-    }
+	return instance;
+}
 
-    /*if (data.env != nullptr)
-	{
-		auto class_loader = data.env->FindClass("java/lang/ClassLoader");
-		auto get_system_loader =
-			data.env->GetStaticMethodID(class_loader, "getSystemClassLoader",
-				"()Ljava/lang/ClassLoader;");
-		auto system_loader =
-			data.env->CallStaticObjectMethod(class_loader, get_system_loader);
+jobject get_player( ) {
+	jfieldID get_player = data.env->GetFieldID( data.env->GetObjectClass(getMc()), "thePlayer", "Lnet/minecraft/client/Minecraft;");
+	return data.env->GetObjectField( getMc( ), get_player);
+}
 
+std::string name( ) {
+	std::cout << "1.1" << std::endl;
+	jclass mc_class = data.env->FindClass("net/minecraft/client/entity/EntityClientPlayerMP");
+	if (mc_class == nullptr)
+		std::cout << "mc_class" << std::endl;
+	std::cout << "1.2" << std::endl;
+	jmethodID get_name = data.env->GetMethodID(mc_class, "sendChatMessage", "(Ljava/lang/String;)V");
+	if (get_name == nullptr)
+		std::cout << "get_name" << std::endl;
+	std::cout << "1.3" << std::endl;
+	jstring test = data.env->NewStringUTF("SALUT");
+	if (test == nullptr)
+		std::cout << "test" << std::endl;
+	std::cout << "1.4" << std::endl;
+	data.env->CallVoidMethod(data.env->GetObjectClass(mc_class), get_name, data.env->NewStringUTF("dxfg"));
+	std::cout << "1.6" << std::endl;
 
+	return nullptr;
+}
 
-        jclass classs = data.env->FindClass("mdr");
+void process()
+{
+    jobject mc = getMc();
+	std::cout << "1" << std::endl;
+	std::string pseudo = name();
+	std::cout << "2" << std::endl;
 
-        jobject obj = AllocObject(classs);
-
-        
-
-		data.env->DefineClass("net/minecraft/hey", system_loader, obj, sizeof(obj));
-		return;
-	}*/
+	//std::cout << pseudo << std::endl;
 }
 
 void inject()
@@ -101,13 +92,11 @@ void inject()
 	freopen_s(&fOut, "conout$", "w", stdout);
 	freopen_s(&fOut, "conout$", "w", stderr);
 
-	std::cout << "[+] Injection Successful!" << std::endl;
-
     if (attach_jvm() == 84 || handle_jvm() == 84)
         return;
-    inject_class();
+    process();
 
-    std::cout << "[+] Injection dxrtrfcgtfy!" << std::endl;
+    std::cout << "[+] Injection Successful!" << std::endl;
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
