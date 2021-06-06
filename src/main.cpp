@@ -49,38 +49,38 @@ jobject getMc()
 }
 
 jobject get_player( ) {
-	jfieldID get_player = data.env->GetFieldID( data.env->GetObjectClass(getMc()), "thePlayer", "Lnet/minecraft/client/Minecraft;");
-	return data.env->GetObjectField( getMc( ), get_player);
+	jmethodID get_player = data.env->GetMethodID(data.env->FindClass("net/minecraft/client/Minecraft"), "getSession", "Lnet/minecraft/util/Session;");
+	if (get_player == nullptr) {
+		std::cout << "Aledsssssssssss " << std::endl;
+		return nullptr;
+	}
+	jobject obj = data.env->CallObjectMethod(getMc(), get_player, "V");
+	if (obj == nullptr) {
+		std::cout << "Aled " << std::endl;
+		return nullptr;
+	}
+	return obj;
 }
 
-std::string name( ) {
-	std::cout << "1.1" << std::endl;
+void name() {
 	jclass mc_class = data.env->FindClass("net/minecraft/client/entity/EntityClientPlayerMP");
-	if (mc_class == nullptr)
-		std::cout << "mc_class" << std::endl;
-	std::cout << "1.2" << std::endl;
-	jmethodID get_name = data.env->GetMethodID(mc_class, "sendChatMessage", "(Ljava/lang/String;)V");
-	if (get_name == nullptr)
-		std::cout << "get_name" << std::endl;
-	std::cout << "1.3" << std::endl;
-	jstring test = data.env->NewStringUTF("SALUT");
-	if (test == nullptr)
-		std::cout << "test" << std::endl;
-	std::cout << "1.4" << std::endl;
-	data.env->CallVoidMethod(data.env->GetObjectClass(mc_class), get_name, data.env->NewStringUTF("dxfg"));
-	std::cout << "1.6" << std::endl;
+	jclass mc_class_origin = data.env->FindClass("net/minecraft/client/Minecraft");
 
-	return nullptr;
+	jmethodID constructor = data.env->GetMethodID(mc_class, "<init>", "(Lnet/minecraft/client/Minecraft;Lnet/minecraft/world/World;Lnet/minecraft/util/Session;Lnet/minecraft/client/network/NetHandlerPlayClient;Lnet/minecraft/stats/StatFileWriter;)V");
+
+	jfieldID fid = data.env->GetFieldID(mc_class_origin, "thePlayer", "Lnet/minecraft/client/entity/EntityClientPlayerMP;");
+	jobject obj = data.env->GetObjectField(getMc(), fid);
+	jmethodID get_name = data.env->GetMethodID(mc_class, "sendChatMessage", "(Ljava/lang/String;)V");
+	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Bonjour à tous les amis !"));
+	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Pierrick Nique"));
+	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Injection complete !"));
+	return;
 }
 
 void process()
 {
     jobject mc = getMc();
-	std::cout << "1" << std::endl;
-	std::string pseudo = name();
-	std::cout << "2" << std::endl;
-
-	//std::cout << pseudo << std::endl;
+	name();
 }
 
 void inject()
