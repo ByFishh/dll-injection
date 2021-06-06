@@ -1,4 +1,4 @@
-#include "epycheat.h"
+#include "../include/epycheat.h"
 
 struct data_t {
     JavaVM *jvm;
@@ -50,15 +50,7 @@ jobject getMc()
 
 jobject get_player( ) {
 	jmethodID get_player = data.env->GetMethodID(data.env->FindClass("net/minecraft/client/Minecraft"), "getSession", "Lnet/minecraft/util/Session;");
-	if (get_player == nullptr) {
-		std::cout << "Aledsssssssssss " << std::endl;
-		return nullptr;
-	}
 	jobject obj = data.env->CallObjectMethod(getMc(), get_player, "V");
-	if (obj == nullptr) {
-		std::cout << "Aled " << std::endl;
-		return nullptr;
-	}
 	return obj;
 }
 
@@ -73,7 +65,8 @@ void name() {
 	jmethodID get_name = data.env->GetMethodID(mc_class, "sendChatMessage", "(Ljava/lang/String;)V");
 	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Bonjour à tous les amis !"));
 	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Pierrick Nique"));
-	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Injection complete !"));
+	while (1)
+		data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Injection complete !"));
 	return;
 }
 
