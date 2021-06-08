@@ -3,6 +3,8 @@
 struct data_t {
     JavaVM *jvm;
     JNIEnv *env;
+	HWND hwnd;
+	int close;
 } data;
 
 int handle_jvm(void)
@@ -11,12 +13,13 @@ int handle_jvm(void)
 
 	if (!jvmHandle) {
         std::cout << "[-] Failed to get JVM Handle" << std::endl;
-        return 84;
+        return 0;
     }	
 	if (data.jvm->GetEnv((void**)&data.env, JNI_VERSION_1_6) == JNI_EDETACHED)
 		data.jvm->AttachCurrentThread((void**)&data.env, NULL);
+	
     std::cout << "[+] Handle Successful!" << std::endl;
-    return 0;
+    return 1;
 }
 
 int attach_jvm(void)
@@ -26,17 +29,17 @@ int attach_jvm(void)
 
 	if (JNI_GetCreatedJavaVMs(&data.jvm, 1, &count) != JNI_OK || count == 0) {
 		std::cout << "[-] Failed to get the JVM" << std::endl;
-		return 84;
+		return 0;
 	}
 	res = data.jvm->GetEnv((void **)&data.env, JNI_VERSION_1_6);
 	if (res == JNI_EDETACHED)
 		res = data.jvm->AttachCurrentThread((void **)&data.env, nullptr);
 	if (res != JNI_OK) {
 		std::cout << "[-] Failed to attach to thread" << std::endl;
-		return 84;
+		return 0;
 	}
 	std::cout << "[+] Attached to JVM" << std::endl;
-    return 0;
+    return 1;
 }
 
 jobject getMc()
@@ -65,15 +68,32 @@ void name() {
 	jmethodID get_name = data.env->GetMethodID(mc_class, "sendChatMessage", "(Ljava/lang/String;)V");
 	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Bonjour à tous les amis !"));
 	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Pierrick Nique"));
-	while (1)
-		data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Injection complete !"));
+	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Injection complete !"));
 	return;
+}
+
+void line() 
+{
 }
 
 void process()
 {
-    jobject mc = getMc();
-	name();
+	while (true) {
+		if (GetAsyncKeyState(VK_NUMPAD0) & 1) {
+			data.close = 1;
+			break;
+		}
+		if (GetAsyncKeyState(VK_NUMPAD1) & 1)
+            name();
+	}
+}
+
+int hook()
+{
+	DWORD wglSwapBuffersAddress = (DWORD)GetProcAddress(GetModuleHandle(__TEXT("opengl32.dll")),"wglSwapBuffers"); 
+
+	std::cout << wglSwapBuffersAddress << std::endl;
+	return 1;
 }
 
 void inject()
@@ -85,15 +105,22 @@ void inject()
 	freopen_s(&fOut, "conout$", "w", stdout);
 	freopen_s(&fOut, "conout$", "w", stderr);
 
-    if (attach_jvm() == 84 || handle_jvm() == 84)
+    if (!attach_jvm() || !handle_jvm() || !hook())
         return;
+	
     process();
 
     std::cout << "[+] Injection Successful!" << std::endl;
 }
 
-BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
-	if (fdwReason == DLL_PROCESS_ATTACH)
+BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved, HWND hwnd) {
+	if (data.close == 1) {
+		std::cout << "[-] Detach!" << std::endl;
+		return TRUE;
+	}
+	if (fdwReason == DLL_PROCESS_ATTACH && data.close == 0) {
+		data.hwnd = hwnd;
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)inject, nullptr, 0, nullptr);
+	}	
 	return TRUE;
 }
