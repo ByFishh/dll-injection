@@ -5,7 +5,9 @@ struct data_t {
     JNIEnv *env;
 	HWND hWnd;
 	HMODULE hModule;
+	void* hook;
 	int close;
+	int display;
 } data;
 
 int HandleJvm(void)
@@ -54,8 +56,12 @@ void AttachConsole(void)
 void DetachConsole(void)
 {
 	data.close = 1;
+	MH_RemoveHook(data.hook);
+	MH_Uninitialize();
+	data.jvm->DetachCurrentThread();
 	FreeConsole();
 	fclose(stdout);
+	std::this_thread::sleep_for (std::chrono::seconds(1));
 	FreeLibraryAndExitThread(data.hModule, NULL);
 }
 
@@ -85,6 +91,44 @@ void sendMessage(const char *message) {
 	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF(message));
 }
 
+void SetupOrtho(void)
+{
+	glPushAttrib( GL_ALL_ATTRIB_BITS );
+	glPushMatrix( );
+	GLint viewport [ 4 ];
+	glGetIntegerv( GL_VIEWPORT, viewport );
+	glViewport( 0, 0, viewport [ 2 ], viewport [ 3 ] );
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity( );
+	glOrtho( 0, viewport [ 2 ], viewport [ 3 ], 0, -1, 1 );
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity( );
+	glDisable( GL_DEPTH_TEST );
+}
+
+const GLubyte red[3] = { 255, 0, 0 };
+
+void Draw( GLfloat x, GLfloat y, GLfloat sidelength, GLubyte r, GLubyte g, GLubyte b, GLubyte alpha )
+{
+	glEnable( GL_BLEND );
+	glColor4ub( r, g, b, alpha );
+
+	GLfloat halfside = sidelength / 2;
+
+	glBegin( GL_QUADS );
+	glVertex2d( x + halfside, y + halfside );
+	glVertex2d( x + halfside, y - halfside );
+	glVertex2d( x - halfside, y - halfside );
+	glVertex2d( x - halfside, y + halfside );
+	glEnd( );
+}
+
+void RestoreGL(void)
+{
+	glPopMatrix( );
+	glPopAttrib( );
+}
+
 void Process(void)
 {
 	std::cout << "[+] Injection Successful!" << std::endl;
@@ -94,13 +138,33 @@ void Process(void)
 			DetachConsole();
 			break;
 		}
-		if (GetAsyncKeyState(VK_NUMPAD1) & 1)
-            sendMessage("TEST");
+		if (GetAsyncKeyState(VK_NUMPAD1) & 1) {
+			data.display = !data.display;
+			sendMessage("TEST");
+		}
+            
 	}
+}
+
+typedef BOOL(__stdcall * twglSwapBuffers) (_In_ HDC hDc);
+twglSwapBuffers owglSwapBuffers;
+
+BOOL __stdcall hwglSwapBuffers(_In_ HDC hDc)
+{
+	if (data.display == 1) {
+		SetupOrtho();
+		Draw(500, 500, 200, 255, 255, 255, 50);
+		RestoreGL();
+	}
+    return owglSwapBuffers(hDc);
 }
 
 int Hook()
 {
+	data.hook = GetProcAddress(GetModuleHandleA((LPCSTR)"opengl32.dll"), "wglSwapBuffers");
+	MH_Initialize();
+	MH_CreateHook(data.hook, hwglSwapBuffers, reinterpret_cast<void**>(&owglSwapBuffers));
+	MH_EnableHook(data.hook);
 	return 1;
 }
 
@@ -118,8 +182,9 @@ BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved, H
 	if (fdwReason == DLL_PROCESS_ATTACH && data.close == 0) {
 		data.hWnd = hWnd;
 		data.hModule = hinstDLL;
+		
 		DisableThreadLibraryCalls(hinstDLL);
-		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Inject, nullptr, 0, nullptr);
+		CloseHandle(CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Inject, nullptr, 0, nullptr));
 	}	
 	return TRUE;
 }
