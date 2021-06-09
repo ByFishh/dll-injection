@@ -3,12 +3,12 @@
 struct data_t {
     JavaVM *jvm;
     JNIEnv *env;
-	HWND hwnd;
+	HWND hWnd;
 	HMODULE hModule;
 	int close;
 } data;
 
-int handle_jvm(void)
+int HandleJvm(void)
 {
     HMODULE jvmHandle = GetModuleHandleA("jvm.dll");
 
@@ -23,7 +23,7 @@ int handle_jvm(void)
     return 1;
 }
 
-int attach_jvm(void)
+int AttachJvm(void)
 {
     jsize count;
     jint res;
@@ -43,6 +43,22 @@ int attach_jvm(void)
     return 1;
 }
 
+void AttachConsole(void)
+{
+	AllocConsole();
+	SetConsoleTitleA("EPYCheat");
+	FILE* fOut;
+	freopen_s(&fOut, "conout$", "w", stdout);
+}
+
+void DetachConsole(void)
+{
+	data.close = 1;
+	FreeConsole();
+	fclose(stdout);
+	FreeLibraryAndExitThread(data.hModule, NULL);
+}
+
 jobject getMc()
 {
 	jclass mc_class = data.env->FindClass("net/minecraft/client/Minecraft");
@@ -52,73 +68,58 @@ jobject getMc()
 	return instance;
 }
 
-jobject get_player( ) {
+jobject getPlayer() {
 	jmethodID get_player = data.env->GetMethodID(data.env->FindClass("net/minecraft/client/Minecraft"), "getSession", "Lnet/minecraft/util/Session;");
 	jobject obj = data.env->CallObjectMethod(getMc(), get_player, "V");
+
 	return obj;
 }
 
-void name() {
+void sendMessage(const char *message) {
 	jclass mc_class = data.env->FindClass("net/minecraft/client/entity/EntityClientPlayerMP");
-	jclass mc_class_origin = data.env->FindClass("net/minecraft/client/Minecraft");
-
 	jmethodID constructor = data.env->GetMethodID(mc_class, "<init>", "(Lnet/minecraft/client/Minecraft;Lnet/minecraft/world/World;Lnet/minecraft/util/Session;Lnet/minecraft/client/network/NetHandlerPlayClient;Lnet/minecraft/stats/StatFileWriter;)V");
-
-	jfieldID fid = data.env->GetFieldID(mc_class_origin, "thePlayer", "Lnet/minecraft/client/entity/EntityClientPlayerMP;");
+	jfieldID fid = data.env->GetFieldID(data.env->GetObjectClass(getMc()), "thePlayer", "Lnet/minecraft/client/entity/EntityClientPlayerMP;");
 	jobject obj = data.env->GetObjectField(getMc(), fid);
 	jmethodID get_name = data.env->GetMethodID(mc_class, "sendChatMessage", "(Ljava/lang/String;)V");
-	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Bonjour à tous les amis !"));
-	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Pierrick Nique"));
-	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF("Injection complete !"));
-	return;
+
+	data.env->CallVoidMethod(obj, get_name, data.env->NewStringUTF(message));
 }
 
-void line() 
+void Process(void)
 {
+	std::cout << "[+] Injection Successful!" << std::endl;
 
-}
-
-void process()
-{
 	while (true) {
 		if (GetAsyncKeyState(VK_NUMPAD0) & 1) {
-			data.close = 1;
-			FreeConsole();
-			fclose(stdout);
-			FreeLibraryAndExitThread(data.hModule, NULL);
+			DetachConsole();
 			break;
 		}
 		if (GetAsyncKeyState(VK_NUMPAD1) & 1)
-            name();
+            sendMessage("TEST");
 	}
 }
 
-int hook()
+int Hook()
 {
 	return 1;
 }
 
-void inject()
+void Inject()
 {
-	AllocConsole();
-	SetConsoleTitleA("EPYCheat");
-	FILE* fOut;
-	freopen_s(&fOut, "conout$", "w", stdout);
+	AttachConsole();
 
-    if (!attach_jvm() || !handle_jvm() || !hook())
+    if (!AttachJvm() || !HandleJvm() || !Hook())
         return;
 
-    process();
-
-    std::cout << "[+] Injection Successful!" << std::endl;
+    Process();
 }
 
-BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved, HWND hwnd) {
+BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved, HWND hWnd) {
 	if (fdwReason == DLL_PROCESS_ATTACH && data.close == 0) {
-		data.hwnd = hwnd;
+		data.hWnd = hWnd;
 		data.hModule = hinstDLL;
 		DisableThreadLibraryCalls(hinstDLL);
-		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)inject, nullptr, 0, nullptr);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Inject, nullptr, 0, nullptr);
 	}	
 	return TRUE;
 }
