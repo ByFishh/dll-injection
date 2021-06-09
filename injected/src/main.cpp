@@ -4,6 +4,7 @@ struct data_t {
     JavaVM *jvm;
     JNIEnv *env;
 	HWND hwnd;
+	HMODULE hModule;
 	int close;
 } data;
 
@@ -74,6 +75,7 @@ void name() {
 
 void line() 
 {
+
 }
 
 void process()
@@ -81,6 +83,9 @@ void process()
 	while (true) {
 		if (GetAsyncKeyState(VK_NUMPAD0) & 1) {
 			data.close = 1;
+			FreeConsole();
+			fclose(stdout);
+			FreeLibraryAndExitThread(data.hModule, NULL);
 			break;
 		}
 		if (GetAsyncKeyState(VK_NUMPAD1) & 1)
@@ -90,36 +95,29 @@ void process()
 
 int hook()
 {
-	DWORD wglSwapBuffersAddress = (DWORD)GetProcAddress(GetModuleHandle(__TEXT("opengl32.dll")),"wglSwapBuffers"); 
-
-	std::cout << wglSwapBuffersAddress << std::endl;
 	return 1;
 }
 
 void inject()
 {
 	AllocConsole();
-	FILE* fIn;
+	SetConsoleTitleA("EPYCheat");
 	FILE* fOut;
-	freopen_s(&fIn, "conin$", "r", stdin);
 	freopen_s(&fOut, "conout$", "w", stdout);
-	freopen_s(&fOut, "conout$", "w", stderr);
 
     if (!attach_jvm() || !handle_jvm() || !hook())
         return;
-	
+
     process();
 
     std::cout << "[+] Injection Successful!" << std::endl;
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved, HWND hwnd) {
-	if (data.close == 1) {
-		std::cout << "[-] Detach!" << std::endl;
-		return TRUE;
-	}
 	if (fdwReason == DLL_PROCESS_ATTACH && data.close == 0) {
 		data.hwnd = hwnd;
+		data.hModule = hinstDLL;
+		DisableThreadLibraryCalls(hinstDLL);
 		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)inject, nullptr, 0, nullptr);
 	}	
 	return TRUE;
