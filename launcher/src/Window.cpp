@@ -1,16 +1,15 @@
 #include "Window.h"
 
-/*--------------TEST--------------*/
 #define HOME_BUTTON 1
 #define STORE_BUTTON 2
 #define LIBRARY_BUTTON 3
 #define TUTORIAL_BUTTON 4
 #define DOWNLOADS_BUTTON 5
 #define SETTINGS_BUTTON 6
+#define ACCOUNT_BUTTON 70
 #define PROFILE_BUTTON 71
 #define SIGNOUT_BUTTON 72
 #define EXIT_BUTTON 73
-/*--------------------------------*/
 
 Window* window = nullptr;
 
@@ -20,18 +19,17 @@ Window::Window(void)
 
 void MenuBase(HWND hwnd)
 {
-    HMENU hmenu = CreateMenu();
-    /*HMENU hstore = CreateMenu();
+    /*HMENU hmenu = CreateMenu();
+    HMENU hstore = CreateMenu();
     HMENU hlibrary = CreateMenu();
     HMENU htutorial = CreateMenu();
     HMENU hdownloads = CreateMenu();
-    HMENU hsettings = CreateMenu();*/
+    HMENU hsettings = CreateMenu();
     HMENU haccount = CreateMenu();
-    /*--------------TEST--------------*/
+ 
     AppendMenu(haccount, MF_STRING, PROFILE_BUTTON, L"Profile");
     AppendMenu(haccount, MF_STRING, SIGNOUT_BUTTON, L"Sign Out");
     AppendMenu(haccount, MF_STRING, EXIT_BUTTON, L"Exit");
-    /*--------------------------------*/
     AppendMenu(hmenu, MF_STRING, HOME_BUTTON, L"Home");
     AppendMenu(hmenu, MF_STRING, HOME_BUTTON, L"Store");
     AppendMenu(hmenu, MF_STRING, HOME_BUTTON, L"Library");
@@ -39,14 +37,17 @@ void MenuBase(HWND hwnd)
     AppendMenu(hmenu, MF_STRING, HOME_BUTTON, L"Downloads");
     AppendMenu(hmenu, MF_STRING, HOME_BUTTON, L"Settings");
     AppendMenu(hmenu, MF_POPUP, (UINT_PTR)haccount, L"Account");
-    SetMenu(hwnd, hmenu);
-    CreateWindowW(L"button", L"TEST", WS_VISIBLE | WS_CHILD | WS_BORDER | SS_CENTER, 100, 100, 100, 50, hwnd, NULL, NULL, NULL);
-    /*hstore = CreateMenu();
-    AppendMenu(hstore, MF_STRING, 2, L"Store");
-    SetMenu(hwnd, hstore);*/
+    SetMenu(hwnd, hmenu);*/
+    CreateWindowW(L"Button", L"Home", WS_VISIBLE | WS_CHILD, 50, 105, 100, 25, hwnd, (HMENU)HOME_BUTTON, NULL, NULL);
+    CreateWindowW(L"Button", L"Store", WS_VISIBLE | WS_CHILD, 50, 140, 100, 25, hwnd, (HMENU)STORE_BUTTON, NULL, NULL);
+    CreateWindowW(L"Button", L"Library", WS_VISIBLE | WS_CHILD, 50, 175, 100, 25, hwnd, (HMENU)LIBRARY_BUTTON, NULL, NULL);
+    CreateWindowW(L"Button", L"Tutorial", WS_VISIBLE | WS_CHILD, 50, 205, 100, 25, hwnd, (HMENU)TUTORIAL_BUTTON, NULL, NULL);
+    CreateWindowW(L"Button", L"Downloads", WS_VISIBLE | WS_CHILD, 50, 390, 100, 25, hwnd, (HMENU)DOWNLOADS_BUTTON, NULL, NULL);
+    CreateWindowW(L"Button", L"Settings", WS_VISIBLE | WS_CHILD, 50, 425, 100, 25, hwnd, (HMENU)SETTINGS_BUTTON, NULL, NULL);
+    CreateWindowW(L"Button", L"Account", WS_VISIBLE | WS_CHILD, 50, 460, 100, 25, hwnd, (HMENU)ACCOUNT_BUTTON, NULL, NULL);
 }
 
-int CommmandButton_MenuBase(WPARAM wparam)
+int CommmandButton_MenuBase(WPARAM wparam, HWND hwnd)
 {
     if (wparam == HOME_BUTTON) {
         MessageBeep(MB_OK);
@@ -56,6 +57,19 @@ int CommmandButton_MenuBase(WPARAM wparam)
         MessageBeep(MB_ICONERROR);
         return (0);
     }
+    if (wparam == ACCOUNT_BUTTON) {
+        if (!window->open_account) {
+            window->b_profile = CreateWindowW(L"Button", L"Profile", WS_VISIBLE | WS_CHILD, 165, 435, 100, 25, hwnd, (HMENU)PROFILE_BUTTON, NULL, NULL);
+            window->b_log_out = CreateWindowW(L"Button", L"Log Out", WS_VISIBLE | WS_CHILD, 165, 460, 100, 25, hwnd, (HMENU)SIGNOUT_BUTTON, NULL, NULL);
+            window->b_exit = CreateWindowW(L"Button", L"Exit", WS_VISIBLE | WS_CHILD, 165, 485, 100, 25, hwnd, (HMENU)EXIT_BUTTON, NULL, NULL);
+        } else {
+            DestroyWindow(window->b_profile);
+            DestroyWindow(window->b_log_out);
+            DestroyWindow(window->b_exit);
+        }
+        window->open_account = (window->open_account + 1) % 2;
+        return (1);
+    }
     return (1);
 }
 
@@ -63,8 +77,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     switch (msg) {
         case WM_COMMAND: {
-            if (!CommmandButton_MenuBase(wparam)) {
-                DestroyWindow(hwnd);
+            if (!CommmandButton_MenuBase(wparam, hwnd)) {
+                window->onDestroy();
+                ::PostQuitMessage(0);
             }
             break;
         }
@@ -110,6 +125,7 @@ bool Window::init(void)
     ::ShowWindow(m_hwnd, SW_SHOW);
     ::UpdateWindow(m_hwnd);
     m_is_run = true;
+    window->open_account = 0;
     return true;
 }
 
