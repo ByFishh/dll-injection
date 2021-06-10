@@ -13,6 +13,7 @@ public:
 	virtual void onUpdate();
 	virtual void onDestroy();
 	~Window();
+	int menu_created;
 	int open_account;
 	HWND b_profile;
 	HWND b_log_out;

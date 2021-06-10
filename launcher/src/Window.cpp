@@ -17,6 +17,18 @@ Window::Window(void)
 {
 }
 
+void DestroyWindow(void)
+{
+    DestroyWindow(window->b_profile);
+    DestroyWindow(window->b_log_out);
+    DestroyWindow(window->b_exit);
+}
+
+void GenerateImage(void)
+{
+
+}
+
 void MenuBase(HWND hwnd)
 {
     /*HMENU hmenu = CreateMenu();
@@ -38,22 +50,34 @@ void MenuBase(HWND hwnd)
     AppendMenu(hmenu, MF_STRING, HOME_BUTTON, L"Settings");
     AppendMenu(hmenu, MF_POPUP, (UINT_PTR)haccount, L"Account");
     SetMenu(hwnd, hmenu);*/
-    CreateWindowW(L"Button", L"Home", WS_VISIBLE | WS_CHILD, 50, 105, 100, 25, hwnd, (HMENU)HOME_BUTTON, NULL, NULL);
-    CreateWindowW(L"Button", L"Store", WS_VISIBLE | WS_CHILD, 50, 140, 100, 25, hwnd, (HMENU)STORE_BUTTON, NULL, NULL);
-    CreateWindowW(L"Button", L"Library", WS_VISIBLE | WS_CHILD, 50, 175, 100, 25, hwnd, (HMENU)LIBRARY_BUTTON, NULL, NULL);
-    CreateWindowW(L"Button", L"Tutorial", WS_VISIBLE | WS_CHILD, 50, 205, 100, 25, hwnd, (HMENU)TUTORIAL_BUTTON, NULL, NULL);
-    CreateWindowW(L"Button", L"Downloads", WS_VISIBLE | WS_CHILD, 50, 390, 100, 25, hwnd, (HMENU)DOWNLOADS_BUTTON, NULL, NULL);
-    CreateWindowW(L"Button", L"Settings", WS_VISIBLE | WS_CHILD, 50, 425, 100, 25, hwnd, (HMENU)SETTINGS_BUTTON, NULL, NULL);
-    CreateWindowW(L"Button", L"Account", WS_VISIBLE | WS_CHILD, 50, 460, 100, 25, hwnd, (HMENU)ACCOUNT_BUTTON, NULL, NULL);
+    if (!window->menu_created) {
+        CreateWindowW(L"Button", L"Home", WS_VISIBLE | WS_CHILD, 50, 105, 100, 25, hwnd, (HMENU)HOME_BUTTON, NULL, NULL);
+        CreateWindowW(L"Button", L"Store", WS_VISIBLE | WS_CHILD, 50, 140, 100, 25, hwnd, (HMENU)STORE_BUTTON, NULL, NULL);
+        CreateWindowW(L"Button", L"Library", WS_VISIBLE | WS_CHILD, 50, 175, 100, 25, hwnd, (HMENU)LIBRARY_BUTTON, NULL, NULL);
+        CreateWindowW(L"Button", L"Tutorial", WS_VISIBLE | WS_CHILD, 50, 205, 100, 25, hwnd, (HMENU)TUTORIAL_BUTTON, NULL, NULL);
+        CreateWindowW(L"Button", L"Downloads", WS_VISIBLE | WS_CHILD, 50, 390, 100, 25, hwnd, (HMENU)DOWNLOADS_BUTTON, NULL, NULL);
+        CreateWindowW(L"Button", L"Settings", WS_VISIBLE | WS_CHILD, 50, 425, 100, 25, hwnd, (HMENU)SETTINGS_BUTTON, NULL, NULL);
+        CreateWindowW(L"Button", L"Account", WS_VISIBLE | WS_CHILD, 50, 460, 100, 25, hwnd, (HMENU)ACCOUNT_BUTTON, NULL, NULL);
+        window->menu_created = 1;
+    }
 }
 
 int CommmandButton_MenuBase(WPARAM wparam, HWND hwnd)
 {
+    if (wparam < ACCOUNT_BUTTON) {
+        window->open_account = 0;
+        DestroyWindow();
+    }
     if (wparam == HOME_BUTTON) {
         MessageBeep(MB_OK);
         return (1);
     }
-    if (wparam == SIGNOUT_BUTTON || wparam == EXIT_BUTTON) {
+    if (wparam == PROFILE_BUTTON || wparam == SIGNOUT_BUTTON || wparam == EXIT_BUTTON) {
+        window->open_account = (window->open_account + 1) % 2;
+        DestroyWindow();
+        if (wparam == PROFILE_BUTTON) {
+            return (1);
+        }
         MessageBeep(MB_ICONERROR);
         return (0);
     }
@@ -63,9 +87,7 @@ int CommmandButton_MenuBase(WPARAM wparam, HWND hwnd)
             window->b_log_out = CreateWindowW(L"Button", L"Log Out", WS_VISIBLE | WS_CHILD, 165, 460, 100, 25, hwnd, (HMENU)SIGNOUT_BUTTON, NULL, NULL);
             window->b_exit = CreateWindowW(L"Button", L"Exit", WS_VISIBLE | WS_CHILD, 165, 485, 100, 25, hwnd, (HMENU)EXIT_BUTTON, NULL, NULL);
         } else {
-            DestroyWindow(window->b_profile);
-            DestroyWindow(window->b_log_out);
-            DestroyWindow(window->b_exit);
+            DestroyWindow();
         }
         window->open_account = (window->open_account + 1) % 2;
         return (1);
@@ -86,6 +108,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         case WM_CREATE: {
             window->onCreate();
             MenuBase(hwnd);
+            GenerateImage();
             break;
         }
         case WM_DESTROY: {
@@ -126,6 +149,7 @@ bool Window::init(void)
     ::UpdateWindow(m_hwnd);
     m_is_run = true;
     window->open_account = 0;
+    window->menu_created = 0;
     return true;
 }
 
