@@ -1,10 +1,6 @@
 @echo off
-call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-del injected.dll .\obj\*.obj
+call "D:\MicrosoftCode\VC\Auxiliary\Build\vcvars64.bat"
 cl /EHsc /c .\src\*.cpp /I .\include /Fo".\obj\\"
-link /DLL /OUT:injected.dll .\obj\*.obj .\lib\*.lib .\lib\*.dll
-
-REM EXIT
-REM Enlevez EXIT si vous avez besoin de debug
-
+link /DLL /OUT:injected.dll .\obj\*.obj .\lib\*.lib
+exit
 %comspec% /k

@@ -21,17 +21,30 @@ void RestoreGL(void)
 	glPopAttrib( );
 }
 
-void Draw( GLfloat x, GLfloat y, GLfloat sidelength, GLubyte r, GLubyte g, GLubyte b, GLubyte alpha )
+void DrawSquare( GLfloat x, GLfloat y, GLfloat sidelength, GLubyte r, GLubyte g, GLubyte b, GLubyte alpha )
 {
 	glEnable( GL_BLEND );
 	glColor4ub( r, g, b, alpha );
 
-	GLfloat halfside = sidelength / 2;
+	GLfloat halfside = sidelength;
 
 	glBegin( GL_QUADS );
 	glVertex2d( x + halfside, y + halfside );
-	glVertex2d( x + halfside, y - halfside );
-	glVertex2d( x - halfside, y - halfside );
-	glVertex2d( x - halfside, y + halfside );
+	glVertex2d( x + halfside, y);
+	glVertex2d( x, y);
+	glVertex2d( x, y + halfside );
+	glEnd( );
+}
+
+void DrawRect( GLfloat x, GLfloat y, GLfloat width, GLfloat height, GLubyte r, GLubyte g, GLubyte b, GLubyte alpha )
+{
+	glEnable( GL_BLEND );
+	glColor4ub( r, g, b, alpha );
+
+	glBegin( GL_QUADS );
+	glVertex2d( x + width, y + height );
+	glVertex2d( x + width, y );
+	glVertex2d( x, y);
+	glVertex2d( x, y + height );
 	glEnd( );
 }

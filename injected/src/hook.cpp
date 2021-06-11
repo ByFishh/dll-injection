@@ -7,7 +7,9 @@ BOOL __stdcall hwglSwapBuffers(_In_ HDC hDc)
 {
 	if (data.display == 1) {
 		SetupOrtho();
-		Draw(500, 500, 200, 255, 255, 255, 50);
+		DrawRect(10, 10, 220, 10, 214, 62, 32, 250);
+		DrawRect(10, 20, 220, 300, 68, 65, 61, 140);
+
 		RestoreGL();
 	}
     return owglSwapBuffers(hDc);

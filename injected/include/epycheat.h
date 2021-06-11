@@ -14,6 +14,8 @@
 #ifndef _EPYCHEAT_H
 #define _EPYCHEAT_H
 
+extern int flyEnabled;
+
 struct data_t {
     JavaVM *jvm;
     JNIEnv *env;
@@ -34,8 +36,16 @@ void DetachConsole(void);
 void SetupOrtho(void);
 void RestoreGL(void);
 
-void Draw( GLfloat x, GLfloat y, GLfloat sidelength, GLubyte r, GLubyte g, GLubyte b, GLubyte alpha );
+void DrawSquare( GLfloat x, GLfloat y, GLfloat sidelength, GLubyte r, GLubyte g, GLubyte b, GLubyte alpha );
+void DrawRect( GLfloat x, GLfloat y, GLfloat width, GLfloat height, GLubyte r, GLubyte g, GLubyte b, GLubyte alpha );
 
 int Hook(void);
+
+jobject getMc(void);
+void modifyFlyState(void);
+jobject getPlayer(void);
+void sendMessage(const char *message);
+void SetPlayerOnGround(void);
+void drawHUD();
 
 #endif
