@@ -24,6 +24,9 @@ struct data_t {
 	void* hook;
 	int close;
 	int display;
+	GLint *viewport;
+	GLfloat *modelView;
+	GLfloat *projection;
 };
 
 extern data_t data;
@@ -35,17 +38,27 @@ void DetachConsole(void);
 
 void SetupOrtho(void);
 void RestoreGL(void);
+GLint* Get_Viewport(void);
+GLfloat* Get_ModelView(void);
+GLfloat* Get_Projection(void);
 
 void DrawSquare( GLfloat x, GLfloat y, GLfloat sidelength, GLubyte r, GLubyte g, GLubyte b, GLubyte alpha );
 void DrawRect( GLfloat x, GLfloat y, GLfloat width, GLfloat height, GLubyte r, GLubyte g, GLubyte b, GLubyte alpha );
+void DrawLine(int x0, int y0, int z0, int x1, int y1, int z1);
 
 int Hook(void);
 
-jobject getMc(void);
-void modifyFlyState(void);
-jobject getPlayer(void);
-void sendMessage(const char *message);
+jobject GetMc(void);
+void ModifyFlyState(void);
+jobject GetPlayer(void);
+void SendChatMessage(const char *message);
 void SetPlayerOnGround(void);
-void drawHUD();
+void DrawHUD(void);
+jobject GetWorld();
+jobjectArray GetNearbyEntity();
+
+void PlayerEsp2D(void);
+void PlayerEsp3D(void);
+
 
 #endif

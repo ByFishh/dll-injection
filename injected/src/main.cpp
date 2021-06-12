@@ -3,7 +3,7 @@
 data_t data;
 int flyEnabled;
 
-jobject getMc()
+jobject GetMc()
 {
 	jclass mc_class = data.env->FindClass("net/minecraft/client/Minecraft");
 	jmethodID find_entry = data.env->GetStaticMethodID(mc_class, "getMinecraft", "()Lnet/minecraft/client/Minecraft;");
@@ -12,23 +12,44 @@ jobject getMc()
 	return instance;
 }
 
-jobject getPlayer() {
+jobject GetPlayer()
+{
 	jclass mc_class = data.env->FindClass("net/minecraft/client/entity/EntityClientPlayerMP");
 	jmethodID constructor = data.env->GetMethodID(mc_class, "<init>", "(Lnet/minecraft/client/Minecraft;Lnet/minecraft/world/World;Lnet/minecraft/util/Session;Lnet/minecraft/client/network/NetHandlerPlayClient;Lnet/minecraft/stats/StatFileWriter;)V");
-	jfieldID fid = data.env->GetFieldID(data.env->GetObjectClass(getMc()), "thePlayer", "Lnet/minecraft/client/entity/EntityClientPlayerMP;");
-	jobject obj = data.env->GetObjectField(getMc(), fid);
+	jfieldID fid = data.env->GetFieldID(data.env->GetObjectClass(GetMc()), "thePlayer", "Lnet/minecraft/client/entity/EntityClientPlayerMP;");
+	jobject obj = data.env->GetObjectField(GetMc(), fid);
+
 	return obj;
 }
 
-void sendMessage(const char *message) {
+jobject GetWorld()
+{
+    jfieldID worldfid = data.env->GetFieldID(data.env->GetObjectClass(GetMc()), "theWorld", "Lnet/minecraft/client/multiplayer/WorldClient;");
+	jobject obj = data.env->GetObjectField(GetMc(), worldfid);
+	return obj;
+}
+
+jobjectArray GetNearbyEntity()
+{
+	jfieldID fid = data.env->GetFieldID(data.env->GetObjectClass(GetWorld()), "loadedEntityList", "Ljava/util/List;");
+	jclass list_cls = data.env->FindClass("java/util/List");
+	jmethodID to_array_md = data.env->GetMethodID(list_cls, "toArray", "()[Ljava/lang/Object;");
+	jobject obj_player_entities = data.env->GetObjectField(GetWorld(), fid);
+	jobjectArray array_entity_list = reinterpret_cast<jobjectArray>(data.env->CallObjectMethod(obj_player_entities, to_array_md));
+
+	return array_entity_list;
+}
+
+void SendChatMessage(const char *message)
+{
 	jclass mc_class = data.env->FindClass("net/minecraft/client/entity/EntityClientPlayerMP");
 	jmethodID get_name = data.env->GetMethodID(mc_class, "sendChatMessage", "(Ljava/lang/String;)V");
-	data.env->CallVoidMethod(getPlayer(), get_name, data.env->NewStringUTF(message));
+	data.env->CallVoidMethod(GetPlayer(), get_name, data.env->NewStringUTF(message));
 }
 
 const GLubyte red[3] = { 255, 0, 0 };
 
-void drawHUD()
+void DrawHUD(void)
 {
 	glEnable( GL_BLEND );
 	glColor4ub( 68, 65, 61, 140);
@@ -45,14 +66,18 @@ void drawHUD()
 void Process(void)
 {
 	std::cout << "[+] Injection Successful!" << std::endl;
-	data.display = 1;
+	data.display = 0;
 	while (true) {
 		if (GetAsyncKeyState(VK_NUMPAD0) & 1) {
 			DetachConsole();
 			break;
 		}
 		if (GetAsyncKeyState(VK_NUMPAD1) & 1) {
-			modifyFlyState();
+			data.display = !data.display;
+			PlayerEsp3D();
+			//ModifyFlyState();
+			//SendChatMessage("swfd");
+			//PlayerEsp2D();
 		}
 	}
 }

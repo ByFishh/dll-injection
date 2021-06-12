@@ -1,17 +1,16 @@
 #include "../include/epycheat.h"
 
-void sendGroundPacket()
+void SendGroundPacket(void)
 {
     jclass packetPositionClass = data.env->FindClass("net/minecraft/network/play/client/C03PacketPlayer");
-    
 }
 
-void sendPlayerPacket(jobject Packet)
+void SendPlayerPacket(jobject Packet)
 {
     jclass playerClass = data.env->FindClass("net/minecraft/client/entity/EntityClientPlayerMP");
     jclass playerHandler = data.env->FindClass("net/minecraft/client/network/NetHandlerPlayClient");
     jfieldID fieldQueue = data.env->GetFieldID(playerClass, "sendQueue", "Lnet/minecraft/client/network/NetHandlerPlayClient;");
-    jobject queueObject = data.env->GetObjectField(getPlayer(), fieldQueue);
+    jobject queueObject = data.env->GetObjectField(GetPlayer(), fieldQueue);
     if (fieldQueue == nullptr) {
         std::cout << "[!] Queue object not found !" << std::endl;
         return;
@@ -25,7 +24,7 @@ void sendPlayerPacket(jobject Packet)
     return;
 }
 
-void modifyFlyState()
+void ModifyFlyState(void)
 {
     jclass playerClass = data.env->FindClass("net/minecraft/client/entity/EntityClientPlayerMP");
     jclass playerParentEntity = data.env->FindClass("net/minecraft/entity/player/EntityPlayer");
@@ -35,7 +34,7 @@ void modifyFlyState()
         std::cout << "[!] Error: Flying module is null !" << std::endl;
         return;
     }
-    jobject getCapabilities = data.env->GetObjectField(getPlayer(), fieldID);
+    jobject getCapabilities = data.env->GetObjectField(GetPlayer(), fieldID);
     if (getCapabilities == nullptr) {
         std::cout << "[!] Error: Flying modulesss is null !" << std::endl;
         return;
@@ -48,12 +47,12 @@ void modifyFlyState()
     jboolean getFlyStatus = data.env->GetBooleanField(getCapabilities, allowFly);
     if (!getFlyStatus) {
         data.env->SetBooleanField(getCapabilities, allowFly, JNI_TRUE);
-        sendMessage("Je Fly Mais tkt c une illusion!");
+        SendChatMessage("Je Fly Mais tkt c une illusion!");
         flyEnabled = 1;
         return;
     } else {
         data.env->SetBooleanField(getCapabilities, allowFly, JNI_FALSE);
-        sendMessage("Je ne Fly Plus !");
+        SendChatMessage("Je ne Fly Plus !");
         flyEnabled = 0;
         return;
     }
