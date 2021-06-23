@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{c651e09d-c54b-4c76-81fd-655fc6b73f47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\sfml">
+      <UniqueIdentifier>{36cb3017-4859-4a5f-a4a7-1af8f92f1876}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\launcher">
+      <UniqueIdentifier>{86801f9e-13bc-4dd3-bfdf-8f7b8904f15c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\launcher\scene">
+      <UniqueIdentifier>{f0aa5f82-9d87-4519-9a7e-6252f972cfcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{5acc7be6-6aaf-4ce6-9f08-5a474b0f2a5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\launcher\scene\home">
+      <UniqueIdentifier>{665d315c-9bda-4eb6-9410-9dddf0f07175}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\sfml\Sprites">
+      <UniqueIdentifier>{29780385-3513-42c8-8f3b-dff472ec5470}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Window.cpp">
+      <Filter>src\launcher</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Home.cpp">
+      <Filter>src\launcher\scene\home</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprites.cpp">
+      <Filter>src\sfml\Sprites</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Window.h">
+      <Filter>src\launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="required.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes.h">
+      <Filter>src\launcher\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Home.h">
+      <Filter>src\launcher\scene\home</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprites.h">
+      <Filter>src\sfml\Sprites</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
