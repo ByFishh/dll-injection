@@ -15,6 +15,7 @@
 #include "Scenes.h"
 #include "Window.h"
 #include "Sprites.h"
+#include "Shop.h"
 #include "Home.h"
 
 static const std::pair<std::string, std::string> tab_menu[] = {
@@ -41,6 +42,16 @@ enum Homes {
     HOME_DOWNLOADS,
     HOME_SETTINGS,
     HOME_ACCOUNT,
+};
+
+enum Shops {
+    SHOP_HOME,
+    SHOP_BASE,
+    SHOP_LIBRARY,
+    SHOP_TUTORIAL,
+    SHOP_DOWNLOADS,
+    SHOP_SETTINGS,
+    SHOP_ACCOUNT,
 };
 
 enum langue {

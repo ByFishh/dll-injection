@@ -17,8 +17,7 @@ Window::Window(const size_t &x, const size_t &y)
     this->_currentScene = HOME;
     this->_setLang(1);
     this->_sceneManager[HOME] = std::make_unique<Home>(this->_window, this->_langLauncher);
-    //this->_sceneManager[(Scenes)STORE] = std::make_unique<Home>(this->_window);
-    //this->_sceneManager[(Scenes)SHOP] = std::make_unique<Shop>(this->_window, this->_langLauncher);
+    this->_sceneManager[SHOP] = std::make_unique<Shop>(this->_window, this->_langLauncher);
 }
 
 void Window::coreLoop()

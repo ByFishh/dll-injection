@@ -1,7 +1,5 @@
 #include "required.h"
 #include <Windows.h>
-#include <chrono>
-#include <thread>
 
 Home::Home(std::shared_ptr<sf::RenderWindow> &window, const std::vector<std::string> &lang) : _window(window)
 {
@@ -55,7 +53,6 @@ void Home::update(sf::Clock& cl, const sf::Time& time, Scenes &currentScene)
     }
 }
 
-
 void Home::MouseMove_Home(void)
 {
     char str[][10] = {("Home"), ("Shop"), ("Library"), ("Tutorial"), ("Downloads"), ("Settings"), ("Account"), ("ScrollBar"), ("\0")};
@@ -69,6 +66,26 @@ void Home::MouseMove_Home(void)
         frect.height = float(this->_listSprite[str[i]]->getSprite().getTextureRect().height);
         if (frect.intersects(this->MouseRect) == true) {
             this->_currentHome = Homes(i);
+            break;
+        }
+    }
+    return;
+}
+
+void Home::MouseClick_Home(Scenes &currentScene)
+{
+    char str[][10] = { ("Home"), ("Shop"), ("Library"), ("Tutorial"), ("Downloads"), ("Settings"), ("Account"), ("ScrollBar"), ("\0") };
+    int i = 0;
+    sf::FloatRect frect = sf::FloatRect(0, 0, 0, 0);
+
+    for (i; str[i][0] != '\0'; i++) {
+        frect.left = float(this->_listSprite[str[i]]->getSprite().getPosition().x);
+        frect.top = float(this->_listSprite[str[i]]->getSprite().getPosition().y);
+        frect.width = float(this->_listSprite[str[i]]->getSprite().getTextureRect().width);
+        frect.height = float(this->_listSprite[str[i]]->getSprite().getTextureRect().height);
+        if (frect.intersects(this->MouseRect) == true) {
+            currentScene = Scenes(i);
+            this->_currentHome = HOME_BASE;
             break;
         }
     }
@@ -93,6 +110,7 @@ void Home::handleEvent(const sf::Event& event, Scenes& currentScene, sf::Clock& 
     }
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
+            MouseClick_Home(currentScene);
 
         }
     }

@@ -13,6 +13,7 @@ class Home : public IScenes {
         void update(sf::Clock &cl, const sf::Time &time, Scenes &currentScene);
         void handleEvent(const sf::Event &event, Scenes &currentScene, sf::Clock &cl, const sf::Time &time);
         void MouseMove_Home(void);
+        void MouseClick_Home(Scenes &currentScene);
         void draw();
     protected:
     private:

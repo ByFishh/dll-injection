@@ -22,12 +22,14 @@
     <ClInclude Include="Home.h" />
     <ClInclude Include="required.h" />
     <ClInclude Include="Scenes.h" />
+    <ClInclude Include="Shop.h" />
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Home.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shop.cpp" />
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>

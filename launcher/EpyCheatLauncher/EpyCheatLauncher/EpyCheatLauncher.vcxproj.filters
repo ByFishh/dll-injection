@@ -22,6 +22,9 @@
     <Filter Include="src\sfml\Sprites">
       <UniqueIdentifier>{29780385-3513-42c8-8f3b-dff472ec5470}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\launcher\scene\shop">
+      <UniqueIdentifier>{5481a97f-a8f0-4697-a72d-d2481ab1b53b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -36,6 +39,7 @@
     <ClCompile Include="Sprites.cpp">
       <Filter>src\sfml\Sprites</Filter>
     </ClCompile>
+    <ClCompile Include="Shop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -53,5 +57,6 @@
     <ClInclude Include="Sprites.h">
       <Filter>src\sfml\Sprites</Filter>
     </ClInclude>
+    <ClInclude Include="Shop.h" />
   </ItemGroup>
 </Project>
