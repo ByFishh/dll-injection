@@ -18,6 +18,11 @@ Window::Window(const size_t &x, const size_t &y)
     this->_setLang(1);
     this->_sceneManager[HOME] = std::make_unique<Home>(this->_window, this->_langLauncher);
     this->_sceneManager[SHOP] = std::make_unique<Shop>(this->_window, this->_langLauncher);
+    this->_sceneManager[LIBRARY] = std::make_unique<Library>(this->_window, this->_langLauncher);
+    this->_sceneManager[TUTORIAL] = std::make_unique<Tutorial>(this->_window, this->_langLauncher);
+    this->_sceneManager[DOWNLOADS] = std::make_unique<Download>(this->_window, this->_langLauncher);
+    this->_sceneManager[SETTINGS] = std::make_unique<Setting>(this->_window, this->_langLauncher);
+    this->_sceneManager[ACCOUNT] = std::make_unique<Account>(this->_window, this->_langLauncher);
 }
 
 void Window::coreLoop()

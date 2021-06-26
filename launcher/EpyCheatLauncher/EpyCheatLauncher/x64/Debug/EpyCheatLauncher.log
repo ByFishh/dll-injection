@@ -1,8 +1,13 @@
-﻿  Home.cpp
+﻿  Account.cpp
+  Downloads.cpp
+  Home.cpp
+  Library.cpp
+  main.cpp
+  Settings.cpp
   Shop.cpp
   Sprites.cpp
+  Tutorial.cpp
   Window.cpp
 C:\Users\Antoine Gasser\Desktop\Repo\ProjetPerso\EpyCheat\launcher\EpyCheatLauncher_sfml\EpyCheatLauncher\EpyCheatLauncher\Window.cpp(13,94): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
-  main.cpp
   Generating Code...
   EpyCheatLauncher.vcxproj -> C:\Users\Antoine Gasser\Desktop\Repo\ProjetPerso\EpyCheat\launcher\EpyCheatLauncher_sfml\EpyCheatLauncher\x64\Debug\EpyCheatLauncher.exe

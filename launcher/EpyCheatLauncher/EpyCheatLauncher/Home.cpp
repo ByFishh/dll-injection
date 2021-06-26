@@ -3,7 +3,6 @@
 
 Home::Home(std::shared_ptr<sf::RenderWindow> &window, const std::vector<std::string> &lang) : _window(window)
 {
-    std::cerr << "TEST HOME" << std::endl;
     this->_listSprite["0Background"] = std::make_unique<Sprites>(".\\Ressources\\windows\\main_window.png", sf::Vector2f(0, 0));
     this->_listSprite["Logo"] = std::make_unique<Sprites>(".\\Ressources\\logo\\logo_epycheat.png", sf::Vector2f(82, 76));
     this->_listSprite["Home"] = std::make_unique<Sprites>(".\\Ressources\\home_butt\\home_butt3.png", sf::Vector2f(86, 219));
@@ -111,7 +110,7 @@ void Home::handleEvent(const sf::Event& event, Scenes& currentScene, sf::Clock& 
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
             MouseClick_Home(currentScene);
-
+            std::cerr << "TEST HOME" << std::endl;
         }
     }
 }

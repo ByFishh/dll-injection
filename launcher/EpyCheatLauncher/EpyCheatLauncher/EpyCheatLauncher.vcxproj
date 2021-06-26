@@ -19,18 +19,28 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Account.h" />
+    <ClInclude Include="Downloads.h" />
     <ClInclude Include="Home.h" />
+    <ClInclude Include="Library.h" />
     <ClInclude Include="required.h" />
     <ClInclude Include="Scenes.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="Shop.h" />
     <ClInclude Include="Sprites.h" />
+    <ClInclude Include="Tutorial.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Account.cpp" />
+    <ClCompile Include="Downloads.cpp" />
     <ClCompile Include="Home.cpp" />
+    <ClCompile Include="Library.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Shop.cpp" />
     <ClCompile Include="Sprites.cpp" />
+    <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

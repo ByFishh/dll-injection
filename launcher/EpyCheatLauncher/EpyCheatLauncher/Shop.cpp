@@ -3,7 +3,6 @@
 
 Shop::Shop(std::shared_ptr<sf::RenderWindow>& window, const std::vector<std::string>& lang) : _window(window)
 {
-    std::cerr << "TEST SHOP" << std::endl;
     this->_listSprite["0Background"] = std::make_unique<Sprites>(".\\Ressources\\windows\\main_window.png", sf::Vector2f(0, 0));
     this->_listSprite["Logo"] = std::make_unique<Sprites>(".\\Ressources\\logo\\logo_epycheat.png", sf::Vector2f(82, 76));
     this->_listSprite["Home"] = std::make_unique<Sprites>(".\\Ressources\\home_butt\\home_butt1.png", sf::Vector2f(86, 219));
@@ -111,7 +110,7 @@ void Shop::handleEvent(const sf::Event& event, Scenes& currentScene, sf::Clock& 
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
             MouseClick_Shop(currentScene);
-
+            std::cerr << "TEST SHOP" << std::endl;
         }
     }
 }

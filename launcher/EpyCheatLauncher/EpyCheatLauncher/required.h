@@ -16,6 +16,11 @@
 #include "Window.h"
 #include "Sprites.h"
 #include "Shop.h"
+#include "Library.h"
+#include "Tutorial.h"
+#include "Downloads.h"
+#include "Settings.h"
+#include "Account.h"
 #include "Home.h"
 
 static const std::pair<std::string, std::string> tab_menu[] = {
@@ -29,8 +34,8 @@ enum Scenes {
     SHOP,
     LIBRARY,
     TUTORIAL,
-    SETTINGS,
     DOWNLOADS,
+    SETTINGS,
     ACCOUNT,
 };
 
@@ -52,6 +57,56 @@ enum Shops {
     SHOP_DOWNLOADS,
     SHOP_SETTINGS,
     SHOP_ACCOUNT,
+};
+
+enum Librarys {
+    LIBRARY_HOME,
+    LIBRARY_SHOP,
+    LIBRARY_BASE,
+    LIBRARY_TUTORIAL,
+    LIBRARY_DOWNLOADS,
+    LIBRARY_SETTINGS,
+    LIBRARY_ACCOUNT,
+};
+
+enum Tutorials {
+    TUTO_HOME,
+    TUTO_SHOP,
+    TUTO_LIBRARY,
+    TUTO_BASE,
+    TUTO_DOWNLOADS,
+    TUTO_SETTINGS,
+    TUTO_ACCOUNT,
+};
+
+enum Downloads {
+    DL_HOME,
+    DL_SHOP,
+    DL_LIBRARY,
+    DL_TUTORIAL,
+    DL_BASE,
+    DL_SETTINGS,
+    DL_ACCOUNT,
+};
+
+enum Settings {
+    SETTING_HOME,
+    SETTING_SHOP,
+    SETTING_LIBRARY,
+    SETTING_TUTORIAL,
+    SETTING_DOWNLOADS,
+    SETTING_BASE,
+    SETTING_ACCOUNT,
+};
+
+enum Accounts {
+    ACCOUNT_HOME,
+    ACCOUNT_SHOP,
+    ACCOUNT_LIBRARY,
+    ACCOUNT_TUTORIAL,
+    ACCOUNT_DOWNLOADS,
+    ACCOUNT_SETTINGS,
+    ACCOUNT_BASE,
 };
 
 enum langue {
