@@ -4,6 +4,9 @@
 Home::Home(std::shared_ptr<sf::RenderWindow> &window, const std::vector<std::string> &lang) : _window(window)
 {
     this->_listSprite["0Background"] = std::make_unique<Sprites>(".\\Ressources\\windows\\main_window.png", sf::Vector2f(0, 0));
+    this->_listSprite["0Background_home"] = std::make_unique<Sprites>(".\\Ressources\\home_butt\\background.png", sf::Vector2f(384, 43));
+    this->_listSprite["Buy"] = std::make_unique<Sprites>(".\\Ressources\\home_butt\\buy_butt1.png", sf::Vector2f(684, 594));
+    this->_listSprite["Details"] = std::make_unique<Sprites>(".\\Ressources\\home_butt\\details_butt1.png", sf::Vector2f(972, 594));
     this->_listSprite["Logo"] = std::make_unique<Sprites>(".\\Ressources\\logo\\logo_epycheat.png", sf::Vector2f(82, 76));
     this->_listSprite["Home"] = std::make_unique<Sprites>(".\\Ressources\\home_butt\\home_butt3.png", sf::Vector2f(86, 219));
     this->_listSprite["Shop"] = std::make_unique<Sprites>(".\\Ressources\\shop_butt\\shop_butt1.png", sf::Vector2f(86, 297));
@@ -73,7 +76,7 @@ void Home::MouseMove_Home(void)
 
 void Home::MouseClick_Home(Scenes &currentScene)
 {
-    char str[][10] = { ("Home"), ("Shop"), ("Library"), ("Tutorial"), ("Downloads"), ("Settings"), ("Account"), ("ScrollBar"), ("\0") };
+    char str[][10] = { ("Home"), ("Shop"), ("Library"), ("Tutorial"), ("Downloads"), ("Settings"), ("Account"), ("ScrollBar"), ("Buy"), ("Details"), ("\0") };
     int i = 0;
     sf::FloatRect frect = sf::FloatRect(0, 0, 0, 0);
 
@@ -83,7 +86,13 @@ void Home::MouseClick_Home(Scenes &currentScene)
         frect.width = float(this->_listSprite[str[i]]->getSprite().getTextureRect().width);
         frect.height = float(this->_listSprite[str[i]]->getSprite().getTextureRect().height);
         if (frect.intersects(this->MouseRect) == true) {
-            currentScene = Scenes(i);
+            if (i == 8) {
+                currentScene = SHOP;
+            } else if (i == 9) {
+                currentScene = TUTORIAL;
+            } else {
+                currentScene = Scenes(i);
+            }
             this->_currentHome = HOME_BASE;
             break;
         }

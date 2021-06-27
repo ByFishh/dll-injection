@@ -36,7 +36,7 @@ void Setting::update(sf::Clock& cl, const sf::Time& time, Scenes& currentScene)
         this->_listSprite["Home"] = std::make_unique<Sprites>(".\\Ressources\\home_butt\\home_butt2.png", sf::Vector2f(86, 219));
     }
     if (this->_currentSetting == SETTING_SHOP) {
-        this->_listSprite["Shop"] = std::make_unique<Sprites>(".\\Ressources\\lib_butt\\lib_butt2.png", sf::Vector2f(86, 375));
+        this->_listSprite["Shop"] = std::make_unique<Sprites>(".\\Ressources\\shop_butt\\shop_butt2.png", sf::Vector2f(86, 297));
     }
     if (this->_currentSetting == SETTING_LIBRARY) {
         this->_listSprite["Library"] = std::make_unique<Sprites>(".\\Ressources\\lib_butt\\lib_butt2.png", sf::Vector2f(86, 375));
